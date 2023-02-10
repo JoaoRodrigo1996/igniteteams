@@ -5,7 +5,7 @@ import {
 } from "@expo-google-fonts/roboto";
 import { ThemeProvider } from "styled-components";
 
-import { Groups } from "@screens/Groups";
+import { NewGroup } from "@screens/NewGroup";
 
 import { Loading } from "@components/Loading";
 import theme from "@theme/index";
@@ -16,7 +16,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {fontsLoaded ? <Groups /> : <Loading />}
+      {fontsLoaded ? <NewGroup /> : <Loading />}
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"
