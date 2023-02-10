@@ -13,13 +13,6 @@ export const Content = styled.View`
   justify-content: center;
 `;
 
-export const Input = styled.TextInput`
-  background-color: ${(props) => props.theme.COLORS.GRAY_700};
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-`;
-
 export const Icon = styled(UsersThree).attrs(({ theme }) => ({
   size: 56,
   color: theme.COLORS.GREEN_500,
