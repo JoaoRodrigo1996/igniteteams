@@ -4,7 +4,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/roboto";
 import { StatusBar } from "react-native";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components/native";
 
 import { Loading } from "@components/Loading";
 import { Routes } from "@routes/index";
