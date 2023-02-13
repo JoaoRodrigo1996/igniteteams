@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, FlatList } from "react-native";
 
 import { Button } from "@components/Button";
@@ -47,7 +47,7 @@ export function Players() {
     try {
       await addPlayerByGroup(newPlayer, group);
       const players = await getPlayersByGroup(group);
-
+      fetchPlayersByTeam();
       setPlayerName("");
 
       console.log(players);
@@ -73,6 +73,10 @@ export function Players() {
       );
     }
   }
+
+  useEffect(() => {
+    fetchPlayersByTeam();
+  }, [team]);
 
   return (
     <Container>
@@ -106,9 +110,9 @@ export function Players() {
       </HeaderList>
       <FlatList
         data={players}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <PlayerCard name={item} onRemovePlayer={() => {}} />
+          <PlayerCard name={item.name} onRemovePlayer={() => {}} />
         )}
         showsHorizontalScrollIndicator={false}
         ListEmptyComponent={() => (
