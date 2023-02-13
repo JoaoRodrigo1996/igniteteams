@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import { Alert, FlatList } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Alert, FlatList, TextInput } from "react-native";
 
 import { Button } from "@components/Button";
 import { ButtonIcon } from "@components/ButtonIcon";
@@ -12,7 +12,6 @@ import { ListEmpty } from "@components/ListEmpty";
 import { PlayerCard } from "@components/PlayerCard";
 
 import { addPlayerByGroup } from "@storage/player/addPlayerByGroup";
-import { getPlayersByGroup } from "@storage/player/getPlayersByGroup";
 import { getPlayersByGroupAndTeam } from "@storage/player/getPlayersByGroupAndTeam";
 import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
 import { AppError } from "@utils/AppError";
@@ -27,6 +26,8 @@ export function Players() {
   const [playerName, setPlayerName] = useState("");
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
+
+  const newPlayerNameInputRef = useRef<TextInput>(null);
 
   const route = useRoute();
   const { group } = route.params as RouteParams;
@@ -46,11 +47,11 @@ export function Players() {
 
     try {
       await addPlayerByGroup(newPlayer, group);
-      const players = await getPlayersByGroup(group);
       fetchPlayersByTeam();
-      setPlayerName("");
 
-      console.log(players);
+      newPlayerNameInputRef.current?.blur();
+
+      setPlayerName("");
     } catch (error) {
       if (error instanceof AppError) {
         return Alert.alert("Nova pessoa", error.message);
@@ -89,6 +90,9 @@ export function Players() {
           autoCorrect={false}
           value={playerName}
           onChangeText={setPlayerName}
+          inputRef={newPlayerNameInputRef}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType="done"
         />
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
       </Form>
@@ -114,7 +118,7 @@ export function Players() {
         renderItem={({ item }) => (
           <PlayerCard name={item.name} onRemovePlayer={() => {}} />
         )}
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <ListEmpty message="Não há pessoas nesse time." />
         )}
