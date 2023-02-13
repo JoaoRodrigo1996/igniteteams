@@ -1,4 +1,4 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { Alert, FlatList, TextInput } from "react-native";
 
@@ -11,10 +11,12 @@ import { Input } from "@components/Input";
 import { ListEmpty } from "@components/ListEmpty";
 import { PlayerCard } from "@components/PlayerCard";
 
+import { removeGroupByName } from "@storage/group/removeGroupByName";
 import { addPlayerByGroup } from "@storage/player/addPlayerByGroup";
 import { getPlayersByGroupAndTeam } from "@storage/player/getPlayersByGroupAndTeam";
 import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
 import { removePlayerByGroup } from "@storage/player/removePlayerByGroup";
+
 import { AppError } from "@utils/AppError";
 
 import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
@@ -27,6 +29,8 @@ export function Players() {
   const [playerName, setPlayerName] = useState("");
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
+
+  const { navigate } = useNavigation();
 
   const newPlayerNameInputRef = useRef<TextInput>(null);
 
@@ -89,6 +93,23 @@ export function Players() {
     }
   }
 
+  async function groupRemove() {
+    try {
+      await removeGroupByName(group);
+      navigate("groups");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Remover grupo", "Não foi possível remover o grupo");
+    }
+  }
+
+  async function handleRemoveGroup() {
+    Alert.alert("Remover", "Deseja remover o grupo", [
+      { text: "Não", style: "cancel" },
+      { text: "Sim", onPress: () => groupRemove() },
+    ]);
+  }
+
   useEffect(() => {
     fetchPlayersByTeam();
   }, [team]);
@@ -145,7 +166,11 @@ export function Players() {
         ]}
       />
 
-      <Button title="Remove Turma" type="SECONDARY" />
+      <Button
+        title="Remove Turma"
+        type="SECONDARY"
+        onPress={handleRemoveGroup}
+      />
     </Container>
   );
 }
