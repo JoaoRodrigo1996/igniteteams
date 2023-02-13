@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 import { FlatList } from "react-native";
 
 import { Button } from "@components/Button";
@@ -7,6 +7,8 @@ import { GroupCard } from "@components/GroupCard";
 import { Header } from "@components/Header";
 import { Highlight } from "@components/Highlight";
 import { ListEmpty } from "@components/ListEmpty";
+
+import { getAllGroups } from "@storage/group/getAllGroups";
 
 import { Container } from "./styles";
 
@@ -18,6 +20,21 @@ export function Groups() {
   function handleNewGroup() {
     navigate("new");
   }
+
+  async function fetchAllGroups() {
+    try {
+      const data = await getAllGroups();
+      setGroups(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllGroups();
+    }, [])
+  );
 
   return (
     <Container>
@@ -36,4 +53,7 @@ export function Groups() {
       <Button title="Criar nova turma" onPress={handleNewGroup} />
     </Container>
   );
+}
+function UseCallback(): () => void | (() => void) | undefined {
+  throw new Error("Function not implemented.");
 }
