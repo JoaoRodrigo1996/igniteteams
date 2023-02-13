@@ -54,6 +54,3 @@ export function Groups() {
     </Container>
   );
 }
-function UseCallback(): () => void | (() => void) | undefined {
-  throw new Error("Function not implemented.");
-}
